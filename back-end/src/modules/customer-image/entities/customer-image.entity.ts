@@ -1,0 +1,48 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Customer } from 'src/modules/customer/entities/customer.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+
+@Entity()
+export class CustomerImage {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ApiProperty({ default: '' })
+  @Column({ default: '' })
+  name: string;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  customerId: number;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  seq: number;
+
+  @ManyToOne(() => Customer, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'customerId' })
+  customer?: Customer;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  userId: number;
+
+  @ManyToOne(() => User, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'userId' })
+  user?: User;
+
+  @ApiProperty({  default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp with time zone',  default: () => 'CURRENT_TIMESTAMP' })
+  create_date?: Date;
+}

@@ -1,0 +1,51 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { ProcessBook } from 'src/modules/process-books/entities/process-book.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+
+@Entity()
+export class ProcessBookImage {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ApiProperty({ default: '' })
+  @Column({ default: '' })
+  name: string;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  processBookId: number;
+
+  @ManyToOne(() => ProcessBook, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'processBookId' })
+  processBook?: ProcessBook;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  userId: number;
+
+  @ApiProperty({ default: 1 })
+  @Column({ default: 1 })
+  seq: number;
+
+  @ManyToOne(() => User, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'userId' })
+  user?: User;
+
+  @ApiProperty({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  create_date?: Date;
+}

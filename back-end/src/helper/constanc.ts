@@ -1,0 +1,19 @@
+const MESSAGE_SAVE_SUCCESS = 'บันทึกสำเร็จ';
+const MESSAGE_SKIP_SUCCESS = 'ข้ามการตรจสอบ';
+const MESSAGE_UPDATE_SUCCESS = 'อัพเดตสำเร็จ';
+const MESSAGE_CHECK_SUCCESS = 'ตรวจสอบสำเร็จ';
+const MESSAGE_DELETE_SUCCESS = 'ลบสำเร็จ';
+const MESSAGE_PERMISSION_DENIED = 'คุณไม่มีสิทธิ์แก้ไข';
+const MESSAGE_DENIED = 'คุณไม่มีสิทธิ์';
+const MESSAGE_WAITING = 'รอการอัพเดตครั้งต่อไป';
+
+export {
+  MESSAGE_SAVE_SUCCESS,
+  MESSAGE_SKIP_SUCCESS,
+  MESSAGE_UPDATE_SUCCESS,
+  MESSAGE_DELETE_SUCCESS,
+  MESSAGE_CHECK_SUCCESS,
+  MESSAGE_PERMISSION_DENIED,
+  MESSAGE_DENIED,
+  MESSAGE_WAITING,
+};
