@@ -1,0 +1,273 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { isEmpty } from "lodash";
+import { useForm, Controller } from "react-hook-form";
+import { MdClose } from "react-icons/md";
+import PropTypes from "prop-types";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "src/hooks/authContext";
+import { fetchInfoProductModels } from "src/store/productModel";
+
+const ModalStockProductModal = ({ open, setModal, RowData, submitRow }) => {
+  const { isLoadingOpen, setIsLoadingOpen } = useAuth();
+
+  const modalRef = React.useRef(null);
+  const container = React.useRef(null);
+
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.productModel);
+
+  React.useEffect(() => {
+    if (open && modalRef.current) {
+      modalRef.current.focus();
+      if (!isNaN(RowData.id)) {
+        fetchInfo(RowData.id);
+      } else {
+        reset(RowData);
+      }
+    }
+  }, [open]);
+
+  React.useEffect(() => {
+    if (!isEmpty(store.data)) {
+      reset(store.data);
+    }
+  }, [store]);
+
+  const fetchInfo = (id) => {
+    setIsLoadingOpen(true);
+    dispatch(fetchInfoProductModels(id))
+      .unwrap()
+      .then(() => setIsLoadingOpen(false))
+      .catch(() => setIsLoadingOpen(false));
+  };
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: RowData,
+  });
+
+  const onSubmit = (data) => {
+    submitRow(data);
+  };
+
+  return (
+    <div
+      ref={modalRef}
+      tabIndex="-1"
+      className={`${
+        open
+          ? "flex justify-center items-center absolute inset-0 overflow-y-auto z-10 overflow-x-hidden p-5 bg-gray-300 bg-opacity-70"
+          : "hidden"
+      }`}
+      onKeyDown={(e) => (e.key == "Escape" ? setModal(false) : null)}
+    >
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="relative w-full max-w-2xl"
+        ref={container}
+      >
+        <div className="bg-white rounded-lg shadow overflow-y-auto max-h-[95vh]">
+          <div className="flex items-center justify-between p-3 border-b rounded-t">
+            <h3 className="text-xl font-semibold text-gray-900">
+              {`${
+                isNaN(RowData.id)
+                  ? "เพิ่มรายการใหม่"
+                  : `แก้ไขรายการ: ${RowData.name}`
+              }`}
+            </h3>
+            <button
+              type="button"
+              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+              data-modal-hide="static-modal"
+              onClick={() => setModal(false)}
+            >
+              <MdClose />
+            </button>
+          </div>
+          <div className="p-2 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="items-center sm:col-span-2 lg:col-span-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mr-2"
+              >
+                ชื่อ
+              </label>
+              <Controller
+                id="name"
+                name="name"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    id="name"
+                    type="text"
+                    className={`mt-1 block w-full px-3 py-2 border ${
+                      errors.name ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
+                  />
+                )}
+              />
+              {errors.name && (
+                <span className="text-red-500 text-xs mt-1">
+                  กรุณาใส่ข้อมูล ชื่อ
+                </span>
+              )}
+            </div>
+
+            <div className="items-center">
+              <label
+                htmlFor="style"
+                className="block text-sm font-medium text-gray-700 mr-2"
+              >
+                แคตตาล็อก
+              </label>
+              <Controller
+                name="catalog"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => {
+                  const fieldValue = Array.isArray(field.value)
+                    ? field.value
+                    : field.value
+                    ? [field.value]
+                    : [];
+
+                  const handleOnChange = (option) => {
+                    const newValues = [...fieldValue];
+                    if (newValues.includes(option)) {
+                      newValues.splice(newValues.indexOf(option), 1);
+                    } else {
+                      newValues.push(option);
+                    }
+                    field.onChange(newValues);
+                  };
+
+                  return (
+                    <div>
+                      <input
+                        id="catalog-1"
+                        type="checkbox"
+                        value="มือถือ"
+                        checked={fieldValue.includes("มือถือ")}
+                        onChange={() => handleOnChange("มือถือ")}
+                        className="mr-2"
+                      />
+                      <label htmlFor="catalog-1" className="text-red-400">
+                        มือถือ
+                      </label>
+                      <input
+                        id="catalog-2"
+                        type="checkbox"
+                        value="อุปกรณ์เสริม"
+                        checked={fieldValue.includes("อุปกรณ์เสริม")}
+                        onChange={() => handleOnChange("อุปกรณ์เสริม")}
+                        className="mr-2 ml-4"
+                      />
+                      <label htmlFor="catalog-2" className="text-blue-400">
+                        อุปกรณ์เสริม
+                      </label>
+
+                      <input
+                        id="catalog-3"
+                        type="checkbox"
+                        value="อะไหล่ซ่อม"
+                        checked={fieldValue.includes("อะไหล่ซ่อม")}
+                        onChange={() => handleOnChange("อะไหล่ซ่อม")}
+                        className="mr-2 ml-4"
+                      />
+                      <label htmlFor="catalog-3" className="text-purple-400">
+                        อะไหล่ซ่อม
+                      </label>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="items-center">
+              <label
+                htmlFor="active"
+                className="block text-sm font-medium text-gray-700 mr-2"
+              >
+                สถานะ
+              </label>
+              <Controller
+                name="active"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <div>
+                    <input
+                      {...field}
+                      id="active-0"
+                      type="radio"
+                      value="0"
+                      checked={field.value === "0"}
+                      onChange={() => field.onChange("0")}
+                      className="mr-2"
+                    />
+                    <label htmlFor="active-0" className="text-red-400">
+                      ปิดใช้งาน
+                    </label>
+                    <input
+                      {...field}
+                      id="active-1"
+                      type="radio"
+                      value="1"
+                      checked={field.value === "1"}
+                      onChange={() => field.onChange("1")}
+                      className="mr-2 ml-4"
+                    />
+                    <label htmlFor="active-1" className="text-green-400">
+                      เปิดใช้งาน
+                    </label>
+                  </div>
+                )}
+              />
+              {errors.active && (
+                <span className="text-red-500 text-xs mt-1">
+                  กรุณาเลือกข้อมูล สถานะ
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end items-center p-4 lg:p-5 border-t border-gray-200 rounded-b">
+            <button
+              disabled={isLoadingOpen}
+              type="submit"
+              className="py-2 px-5 ml-3 text-sm text-white bg-blue-400 rounded-lg border border-blue-400 hover:bg-blue-500"
+            >
+              ยืนยัน
+            </button>
+            <button
+              onClick={() => setModal(!open)}
+              type="button"
+              className="py-2.5 px-5 ml-3 text-sm text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-red-300 hover:text-white"
+            >
+              ปิด
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+ModalStockProductModal.propTypes = {
+  open: PropTypes.bool,
+  setModal: PropTypes.func,
+  RowData: PropTypes.object,
+  submitRow: PropTypes.func,
+};
+
+export default ModalStockProductModal;

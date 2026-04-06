@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400&display=swap");
+
+/* Apply Kanit font to all elements */
+body {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+  font-family: "Kanit", sans-serif;
+}
+
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes dropdown {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown 0.2s ease-in-out;
+}
+
+/* For Firefox - Hide scrollbars */
+@-moz-document url-prefix() {
+  html {
+    scrollbar-width: none;
+  }
+}
+
+/* For modern browsers including Edge that support forced-colors */
+@media (forced-colors: active) {
+  html {
+    scrollbar-color: none; /* Example to remove scrollbar color, adjust as needed */
+  }
+}
+
+/* Hide scrollbars for WebKit browsers */
+::-webkit-scrollbar {
+  display: none;
+}
+
+.react-select__control {
+  margin-top: 0.25rem !important;
+  border-radius: 6px !important;
+  border-color: rgb(209 213 219) !important;
+}
+
+.react-select__value-container {
+  flex-wrap: nowrap !important;
+}
+
+.react-select__multi-value {
+  min-width: 40% !important;
+}

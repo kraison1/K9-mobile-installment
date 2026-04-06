@@ -1,0 +1,9 @@
+node_modules
+.git
+.vscode
+Dockerfile
+deployment.sh
+npm-debug.log*
+yarn-error.log*
+coverage
+dist
